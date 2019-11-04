@@ -1,34 +1,22 @@
 package com.example.tictactoemadness;
 
-import androidx.annotation.IdRes;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.usage.UsageEvents;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
-//TODO Make placeSymbol of chosen index (boxToWinOrBlock) work -> rn it places twice or not at all
-//TODO: Finish writing perfectGamePlacer()
-
-//TODO: Start/Finish averageGamePlacer()
+//TODO: Start/Finish averageGamePlacer() // fix how it over counts says 9 when movenumber really at 8
 //TODO: Make game over screen display correct game over results
 
 //TODO: Fix reset board method -> look into invisible button detection
-
 //TODO: Make graphics better
 
 //TODO: Make navigation more intuitive
 //TODO: Make code "cleaner"
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -117,10 +105,20 @@ public class MainActivity extends AppCompatActivity {
     //50% user goes first
     public void select_medium (View view){
         difficultySelected = "medium";
-        //System.out.println("Inside Select Medium");
-        whoGoesFirst = "user";
-        curTurn = "user";
+        System.out.println("Inside Select Medium");
+
+        int whoGoesFirstMedium = (int)(Math.random()*10);
+        System.out.println("whoGoesFirstMedium " + whoGoesFirstMedium);
+        if (whoGoesFirstMedium < 6){
+            curTurn = "user";
+            whoGoesFirst = "user";
+        } else {
+            curTurn = "ai";
+            whoGoesFirst = "ai";
+        }
+        System.out.println("whoGoesFirstMedium CURTURN " + curTurn);
         setContentView(R.layout.game_screen);
+        makeMove();
     }
     //user selects hard -> game screen
     //25% user goes first
@@ -138,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
     public void check_values (View view){
         System.out.println("User Symbol " + userSymbol);
         System.out.println("Difficulty Selected " + difficultySelected);
+        System.out.println("Curturn " + curTurn);
         //System.out.println("Inside Select Hard");
         //Checks if box/board space is filled
         for (int i = 0; i < boxFilled.length;i++){
@@ -242,16 +241,16 @@ public class MainActivity extends AppCompatActivity {
                     boxFilled[boxNum] = true;
                     ImageView img = (ImageView) findViewById(R.id.ImageCircle + boxNum);
                     img.setVisibility(View.VISIBLE);
-
-                    moveNumber += 1;
                     System.out.println("MOVEBEING INCREASED IN userSymbol.equals(circle)t=user " + moveNumber);
+                    moveNumber += 1;
+
                 } else if (userSymbol.equals("cross")) {
                     boxFilled[boxNum] = true;
                     ImageView img = (ImageView) findViewById(R.id.ImageCross + boxNum);
                     img.setVisibility(View.VISIBLE);
-
-                    moveNumber += 1;
                     System.out.println("MOVEBEING INCREASED IN userSymbol.equals(cross)t=user " + moveNumber);
+                    moveNumber += 1;
+
                 }
             } else if (curTurn == "ai" ) {
                 ArrayList convertedBoxNumber = convertBooleanArrayIntTo2DBoardValue(boxNum);
@@ -301,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
                     // resetBoard();
                     showWinScreen();
                     TextView outcomeText = (TextView)(findViewById(R.id.EndOfGameText));
-                    System.out.println("TIE " + moveNumber);
+                    System.out.println("TIE under move 9" + moveNumber);
                     outcomeText.setText("You tied!!!");
                     return;
                 }
@@ -319,6 +318,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (gameOver == true ){
             System.out.println("WHYISMYCODEBROKE");
             showWinScreen();
+            TextView outcomeText = (TextView)(findViewById(R.id.EndOfGameText));
+            System.out.println("TIE under gameover == true" + moveNumber);
+            outcomeText.setText("You tied!!!");
         }
         return;
     }
@@ -335,9 +337,14 @@ public class MainActivity extends AppCompatActivity {
         } else if (difficultySelected == "hard" && moveNumber % 2 == 0){
             System.out.println("INSIDEMAKEMOVE");
             perfectGamePlacer();
+        } else if (difficultySelected == "medium" && curTurn == "ai"){
+            System.out.println("INSIDEMAKEMOVEMEDIUM");
+            //TODO fix the way that moves are being counted movenumber is hitting 9 before it actually equals 9
+            mediumModePlacer();
         }
     }
     //TODO FIX THIS RESET Button
+    //TODO look up how to find an invisible button
     public void resetBoard (){
         populateBoard();
         userSymbol = "empty";
@@ -428,7 +435,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (boxToFill == 8) {
                     board[2][2] = "cross";
                 }
-            } else if (userSymbol == "cross") {//TODO COME BCK AND REPLACE === placesymbol JUSTIN
+            } else if (userSymbol == "cross") {
                 //System.out.println("Inside FILL NULL BOX ");
                 System.out.println("MOVEBEING INCREASED IN userSymbol.equals(cross) " + moveNumber);
                 moveNumber += 1;
@@ -470,8 +477,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             curTurn = "user";
+
         }
-        if (difficultySelected == "hard" && moveNumber == 9){
+        if (moveNumber == 9){
             checkBoard();
             if (!gameOver){
                 //System.out.println(" Insidemovenum " + moveNumber);
@@ -484,6 +492,15 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
+    }
+
+    public void mediumModePlacer(){//AI that combines random placing and blocking wins : methods used checkBoard() randomPlacer
+        if (curTurn == "ai" && moveNumber < 3){
+            randomPlacer();
+        } else if (curTurn == "ai" && moveNumber > 2){
+            checkBoard();
+        }
+
     }
 
     public void perfectGamePlacer(){//AI that plays perfect game
@@ -588,7 +605,7 @@ public class MainActivity extends AppCompatActivity {
         //moveNumber += 1;
     }
     public void checkBoard (){
-
+        System.out.println("insideofcheckboard");
 
         int numCirclesCurCol = 0;
         int numCrossesCurCol = 0;
@@ -869,9 +886,8 @@ public class MainActivity extends AppCompatActivity {
 
         }
         //places winning move for ai
-        System.out.println("CHECKINGIN " + moveNumber);
-        if (difficultySelected == "hard" && boxToWinOrBlock != 666 && (circleAlmostWin || crossAlmostWin) && curTurn == "ai") {
-            curTurn = "ai";
+        System.out.println("CHECKINGIN " + moveNumber + circleWon + crossWon + gameOver);
+        if (difficultySelected != "easy" && boxToWinOrBlock != 666 && (circleAlmostWin || crossAlmostWin) && curTurn == "ai" && !gameOver) {
             //System.out.println("INSIDE OF DIFFICULTYSLECTED IN CHECK");
             //System.out.println("CHECK " + circleAlmostWin + " " + crossAlmostWin);
             System.out.println("INSIDE OF DIFFICULTYSLECTED IN CHECK " + circleAlmostWin + crossAlmostWin);
@@ -896,7 +912,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("PUKE crossAlmostWin IN CHECK BLOCK " + boxToWinOrBlock);
                 return;
             }
-        } else if (difficultySelected == "hard" && curTurn == "ai"){
+        } else if (difficultySelected != "easy" && curTurn == "ai"){
             randomPlacer();
             System.out.println("SYSTEMISCONFUSEDBCNOLOGICALMOVES");
         }
@@ -923,9 +939,9 @@ public class MainActivity extends AppCompatActivity {
             crossWon = true;
             System.out.println("CROSSWONDIAGONAL");
         }
-
+        System.out.println( "CIRCLE WON " + circleWon + " CROSSWON " + crossWon);
         //changes game outcome text
-        if (gameOver){
+        if (gameOver && (circleWon || crossWon)){
             System.out.println( "IFGAMEOVERMOVE NUM " + moveNumber);
             showWinScreen();
             System.out.println( "CIRCLE WON " + circleWon + " CROSSWON " + crossWon);
@@ -950,6 +966,12 @@ public class MainActivity extends AppCompatActivity {
                 outcomeText.setText("You lost!!! by cross");
                 return;
             }
+        } else if (gameOver){
+            showWinScreen();
+            TextView outcomeText = (TextView)(findViewById(R.id.EndOfGameText));
+            System.out.println("TIE under checkboard" + moveNumber);
+            outcomeText.setText("You tied!!!");
+            return;
         }
         if (difficultySelected == "easy"){
             randomPlacer();
@@ -1026,28 +1048,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
-//        //TODO Fix the transition screen
-//        if (crossWon && userSymbol == "cross"){
-//            System.out.println("CROSSHASWON");
-//            TextView textView = new TextView(this);
-//            //textView.setText("CROSSHASWON");
-//            setContentView(R.layout.game_over_screen);
-//        } else if (circleWon && userSymbol == "circle"){
-//            System.out.println("CIRCLEHASWON");
-//            TextView textView = new TextView(this);
-//            //textView.setText("CIRCLEHASWON");
-//            setContentView(R.layout.game_over_screen);
-//        } else if (circleWon && userSymbol == "cross"){
-//            System.out.println("CIRCLEHASWON");
-//            TextView textView = new TextView(this);
-//            //textView.setText("CIRCLEHASWON");
-//            setContentView(R.layout.game_over_screen);
-//        } else if (crossWon && userSymbol == "circle"){
-//            System.out.println("CROSSHASWON");
-//            TextView textView = new TextView(this);
-//            //textView.setText("CROSSHASWON");
-//            setContentView(R.layout.game_over_screen);
-//        }
+
     //    void toast (View view){
 //        Toast.makeText(getApplicationContext(),"Hello Javatpoint",Toast.LENGTH_SHORT).show();
 //    }
