@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Tic Tac Toe Madness</string>
+    <string name="TicTacToeMadness">Tic Tac Toe Madness</string>
+    <string name="ChooseSymbol">Choose a Symbol</string>
+    <string name="SelectDifficulty">Select Difficulty</string>
+    <string name="Easy">Easy</string>
+    <string name="Medium">Medium</string>
+    <string name="Hard">Hard</string>
+    <string name="YouLost">You Lost!!!</string>
+    <string name="PlayAgain">Play Again</string>
+    <string name="ChangeDifficulty">Change Difficulty</string>
+    <string name="YouWon">You Won!!</string>
+</resources>
