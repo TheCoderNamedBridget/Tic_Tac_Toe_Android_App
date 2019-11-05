@@ -314,6 +314,7 @@
             android:layout_marginBottom="611dp"
             android:onClick="check_values"
             android:text="Check Values"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"

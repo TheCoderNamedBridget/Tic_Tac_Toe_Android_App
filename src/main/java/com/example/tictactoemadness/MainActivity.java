@@ -9,14 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 
-//TODO: Start/Finish averageGamePlacer() // fix how it over counts says 9 when movenumber really at 8
-//TODO: Make game over screen display correct game over results
-
-//TODO: Fix reset board method -> look into invisible button detection
-//TODO: Make graphics better
-
-//TODO: Make navigation more intuitive
-//TODO: Make code "cleaner"
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
         return difficultySelected;
     }
     public void showselectdifficulty(View view){
+        setContentView(R.layout.select_difficulty);
+    }
+    public void showSelectedDifficultyFromJavaCode(){
         setContentView(R.layout.select_difficulty);
     }
     public int getMoveNumber(){
@@ -137,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("User Symbol " + userSymbol);
         System.out.println("Difficulty Selected " + difficultySelected);
         System.out.println("Curturn " + curTurn);
+        System.out.println("MoveNumber " + moveNumber);
         //System.out.println("Inside Select Hard");
         //Checks if box/board space is filled
         for (int i = 0; i < boxFilled.length;i++){
@@ -342,43 +338,58 @@ public class MainActivity extends AppCompatActivity {
             perfectGamePlacer();
         } else if (difficultySelected == "medium" && curTurn == "ai"){
             System.out.println("INSIDEMAKEMOVEMEDIUM");
-            //TODO fix the way that moves are being counted movenumber is hitting 9 before it actually equals 9
             mediumModePlacer();
         }
     }
-    //TODO FIX THIS RESET Button
-    //TODO look up how to find an invisible button
     public void resetBoard (){
+        System.out.println("INSIDERESETBOARD above populate");
         populateBoard();
-        userSymbol = "empty";
-        difficultySelected = "empty";
+        System.out.println("INSIDERESETBOARD below populate");
 
-        ImageView imgCross0=(ImageView)findViewById(R.id.ImageCross);
-        imgCross0.setVisibility(View.INVISIBLE);
+        moveNumber = 0;
+        gameOver = false;
+        System.out.println("INSIDERESETBOARD above reset image of cross ");
+    }
 
-        ImageView imgCircle0=(ImageView)findViewById(R.id.ImageCircle );
-        imgCircle0.setVisibility(View.INVISIBLE);
-
-        Button resetButton0=(Button)findViewById(R.id.Box );
-        resetButton0.setVisibility(View.VISIBLE);
-
-
-        for (int i = 0; i < 9; i++){
-            //System.out.println("TESTING BITCH " + (i));
-            ImageView imgCross=(ImageView)findViewById(R.id.ImageCross + (i));
-            imgCross.setVisibility(View.INVISIBLE);
-
-            ImageView imgCircle=(ImageView)findViewById(R.id.ImageCircle + (i));
-            imgCircle.setVisibility(View.INVISIBLE);
-
-            Button resetButton=(Button)findViewById(R.id.Box + (i));
-            resetButton.setVisibility(View.VISIBLE);
-        }
+    public void resetDifficulty(View view){
+        System.out.println("inside resetdifficulty");
+        resetBoard();
+        difficultySelected = "";
+        showSelectedDifficultyFromJavaCode();
+        System.out.println("inside resetdifficulty2 curturn = " + curTurn);
+        System.out.println("inside resetdifficulty2");
+        makeMove();
     }
 
     public void playAgain(View view ){
+        System.out.println("inside playAgain");
         resetBoard();
-        showHomeScreen();
+        System.out.println("inside playAgain");
+        showGameScreen();
+        if (difficultySelected == "easy"){
+            whoGoesFirst = "user";
+            curTurn = "user";
+        } else if (difficultySelected == "medium"){
+            int whoGoesFirstMedium = (int)(Math.random()*10);
+            if (whoGoesFirstMedium < 6){
+                curTurn = "user";
+                whoGoesFirst = "user";
+            } else {
+                curTurn = "ai";
+                whoGoesFirst = "ai";
+                makeMove();
+            }
+        } else if (difficultySelected == "hard"){
+            whoGoesFirst = "ai";
+            curTurn = "ai";
+            makeMove();
+        }
+
+        System.out.println("inside playAgain");
+    }
+
+    public void showGameScreen(){
+        setContentView(R.layout.game_screen);
     }
     public void randomPlacer (){
         if (gameOver){
