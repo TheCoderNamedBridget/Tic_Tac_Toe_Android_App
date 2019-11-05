@@ -241,16 +241,17 @@ public class MainActivity extends AppCompatActivity {
                     boxFilled[boxNum] = true;
                     ImageView img = (ImageView) findViewById(R.id.ImageCircle + boxNum);
                     img.setVisibility(View.VISIBLE);
-                    System.out.println("MOVEBEING INCREASED IN userSymbol.equals(circle)t=user " + moveNumber);
-                    moveNumber += 1;
 
-                } else if (userSymbol.equals("cross")) {
+                    moveNumber += 1;
+                    System.out.println("MOVEBEING INCREASED IN userSymbol.equals(circle)t=user " + moveNumber);
+                } else if (userSymbol.equals("cross")) {//TODO: on 9th move isn't showing cross correctly
+                    System.out.println("IMAGECROSS " + boxNum);
                     boxFilled[boxNum] = true;
                     ImageView img = (ImageView) findViewById(R.id.ImageCross + boxNum);
                     img.setVisibility(View.VISIBLE);
-                    System.out.println("MOVEBEING INCREASED IN userSymbol.equals(cross)t=user " + moveNumber);
-                    moveNumber += 1;
 
+                    moveNumber += 1;
+                    System.out.println("MOVEBEING INCREASED IN userSymbol.equals(cross)t=user " + moveNumber);
                 }
             } else if (curTurn == "ai" ) {
                 ArrayList convertedBoxNumber = convertBooleanArrayIntTo2DBoardValue(boxNum);
@@ -284,18 +285,20 @@ public class MainActivity extends AppCompatActivity {
             }
             Button resetButton=(Button)findViewById(R.id.Box + boxNum);
             resetButton.setVisibility(View.INVISIBLE);
-            System.out.println("CURTURNINPLACESYMBOL " + curTurn);
+            System.out.println("CURTURNINPLACESYMBOL " + curTurn + " boxNum " + boxNum);
             if (curTurn == "user"){
                 curTurn = "ai";
             } else if (curTurn == "ai"){
                 curTurn = "user";
             }
-            System.out.println("CURTURNINPLACESYMBOL " + curTurn + moveNumber);
+            System.out.println("CURTURNINPLACESYMBOL " + curTurn + moveNumber + gameOver);
 
             if (moveNumber == 9){
-                checkBoard();
+                System.out.println("BUG IS under here and happening in checkBoard " + moveNumber);
+                //checkBoard();
+                System.out.println("BUG IS above here and happening in checkBoard " + moveNumber);
                 if (!gameOver){
-                    //System.out.println(" Insidemovenum " + moveNumber);
+                    System.out.println(" Insidemovenum " + moveNumber);
                     gameOver = true;
                     // resetBoard();
                     showWinScreen();
@@ -305,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
             }
-            if (moveNumber > 4 && curTurn == "ai" ){
+            if (moveNumber > 4){
                 System.out.println("HELPMEEE " );
                 //check for win
                 checkBoard();
@@ -393,8 +396,7 @@ public class MainActivity extends AppCompatActivity {
             boxFilled[boxToFill] = true;
             //System.out.println("LOOOOOOK " + boxToFill);
             if (userSymbol == "circle") {
-                System.out.println("MOVEBEING INCREASED IN randomplacer us=circle " + moveNumber);
-                moveNumber += 1;
+
                 //System.out.println("Inside FILL NULL BOX ");
                 if (boxToFill == 0) {
                     //System.out.println("WHICH BOX IS IT? ImageCross" );
@@ -404,6 +406,9 @@ public class MainActivity extends AppCompatActivity {
 
                     Button resetButton = (Button) findViewById(R.id.Box);
                     resetButton.setVisibility(View.INVISIBLE);
+
+                    moveNumber += 1;
+                    System.out.println("MOVEBEING INCREASED IN randomplacer us=circle " + moveNumber);
                 } else {
                     //System.out.println("WHICH BOX IS IT? ImageCross" + (boxToFill));
                     //placeSymbol(boxToFill);
@@ -412,6 +417,9 @@ public class MainActivity extends AppCompatActivity {
 
                     Button resetButton = (Button) findViewById(R.id.Box + (boxToFill));
                     resetButton.setVisibility(View.INVISIBLE);
+
+                    moveNumber += 1;
+                    System.out.println("MOVEBEING INCREASED IN randomplacer us=circle " + moveNumber);
                 }
 
 
@@ -437,8 +445,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else if (userSymbol == "cross") {
                 //System.out.println("Inside FILL NULL BOX ");
-                System.out.println("MOVEBEING INCREASED IN userSymbol.equals(cross) " + moveNumber);
-                moveNumber += 1;
+
                 boxFilled[boxToFill] = true;
                 if (boxToFill == 0) {
                     //System.out.println("WHICH BOX IS IT? ImageCircle" );
@@ -447,6 +454,8 @@ public class MainActivity extends AppCompatActivity {
                     aimove.setVisibility(View.VISIBLE);
                     Button resetButton = (Button) findViewById(R.id.Box);
                     resetButton.setVisibility(View.INVISIBLE);
+                    moveNumber += 1;
+                    System.out.println("MOVEBEING INCREASED IN userSymbol.equals(cross) " + moveNumber);
                 } else {
                     //System.out.println("WHICH BOX IS IT? ImageCircle" + (boxToFill));
                     //placeSymbol(boxToFill);
@@ -454,6 +463,9 @@ public class MainActivity extends AppCompatActivity {
                     aimove.setVisibility(View.VISIBLE);
                     Button resetButton = (Button) findViewById(R.id.Box + (boxToFill));
                     resetButton.setVisibility(View.INVISIBLE);
+
+                    moveNumber += 1;
+                    System.out.println("MOVEBEING INCREASED IN userSymbol.equals(cross) " + moveNumber);
                 }
                 if (boxToFill == 0) {
                     board[0][0] = "circle";
@@ -596,13 +608,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } else if ( moveNumber >= 4 && curTurn == "ai" && moveNumber % 2 == 0){
-            System.out.println("Move > 4 BUTTBUTT checking board checkboard");
             checkBoard();
-
-            //got to one of the remaining corners
         }
         curTurn = "user";
-        //moveNumber += 1;
     }
     public void checkBoard (){
         System.out.println("insideofcheckboard");
@@ -884,6 +892,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+        }
+        if (!gameOver && !circleWon && !crossWon&& moveNumber == 9){
+            System.out.println("CHECKINGININSIDEOFCHECKBOARD " );
+            showWinScreen();
+            TextView outcomeText = (TextView)(findViewById(R.id.EndOfGameText));
+            System.out.println("You Tied!!");
+            outcomeText.setText("You Tied!!");
         }
         //places winning move for ai
         System.out.println("CHECKINGIN " + moveNumber + circleWon + crossWon + gameOver);
