@@ -385,6 +385,7 @@ public class MainActivity extends AppCompatActivity {
             }
             curTurn = "user";
         }
+        checkBoard();
         if (moveNumber == 9){
             checkBoard();
             if (!gameOver){
@@ -525,7 +526,7 @@ public class MainActivity extends AppCompatActivity {
                     numCrossesCurRow += 1;
                 }//else if value == null
 
-                //chekc for win and almost win conditions
+                //check for win and almost win conditions
                 if (numCirclesCurCol == 3) {
                     gameOver = true;
                     circleWon = true;
@@ -719,16 +720,14 @@ public class MainActivity extends AppCompatActivity {
         if (!difficultySelected.equals("easy") && boxToWinOrBlock != 666 && (circleAlmostWin || crossAlmostWin) && curTurn.equals("ai") && !gameOver) {
             if (circleAlmostWin && userSymbol.equals("cross") && boxToWinForAi != 666) {
                 placeSymbol(boxToWinForAi);
-                return;
+                circleWon = true;
             } else if (crossAlmostWin && userSymbol.equals("circle") && boxToWinForAi != 666) {
                 placeSymbol(boxToWinForAi);
-                return;
+                crossWon = true;
             } else if (circleAlmostWin && userSymbol.equals("circle") && boxToWinForUser != 666) {
                 placeSymbol(boxToWinForUser);
-                return;
             } else if (crossAlmostWin && userSymbol.equals("cross") && boxToWinForUser != 666) {
                 placeSymbol(boxToWinForUser);
-                return;
             }
         } else if (!difficultySelected.equals("easy") && curTurn.equals("ai")){
             randomPlacer();
@@ -776,7 +775,7 @@ public class MainActivity extends AppCompatActivity {
             outcomeText.setText("You tied!!!");
             return;
         }
-        if (difficultySelected.equals("easy")){
+        if (difficultySelected.equals("easy")&& curTurn == "ai"){
             randomPlacer();
         }
     }
