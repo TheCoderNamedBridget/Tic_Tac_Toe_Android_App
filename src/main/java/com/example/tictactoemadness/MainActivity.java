@@ -98,24 +98,6 @@ public class MainActivity extends AppCompatActivity {
         makeMove();
     }
 
-    //checks values of user
-    public void check_values (View view){
-        System.out.println("User Symbol " + userSymbol);
-        System.out.println("Difficulty Selected " + difficultySelected);
-        System.out.println("Curturn " + curTurn);
-        System.out.println("MoveNumber " + moveNumber);
-        //System.out.println("Inside Select Hard");
-        //Checks if box/board space is filled
-        for (int i = 0; i < boxFilled.length;i++){
-            System.out.println("Box Filled " + i + " " + boxFilled[i]);
-        }
-        //checks value of board piece
-        for (int row = 0; row < board.length; row++){
-            for (int col = 0; col < board.length; col++){
-                System.out.println("Board Value " + "row " + row + "col" + col + board[row][col]);
-            }
-        }
-    }
 
     //Changes value in array to box filled
     public void boxClicked(View view){
@@ -226,6 +208,9 @@ public class MainActivity extends AppCompatActivity {
                 curTurn = "user";
             }
             if (moveNumber == 9){
+                if (difficultySelected.equals("easy") && curTurn.equals("ai")){
+                    checkBoard();
+                }
                 if (!gameOver){
                     gameOver = true;
                     showWinScreen();
@@ -525,12 +510,11 @@ public class MainActivity extends AppCompatActivity {
                 } else if (!board[row][col].equals("empty") && board[row][col].equals("cross")) {//adds for cross in row
                     numCrossesCurRow += 1;
                 }//else if value == null
-
                 //check for win and almost win conditions
                 if (numCirclesCurCol == 3) {
                     gameOver = true;
                     circleWon = true;
-                } else if (numCirclesCurCol == 2 && !difficultySelected.equals("easy")) {
+                } else if (numCirclesCurCol == 2 && !difficultySelected.equals("easy") && moveNumber != 9) {
                     for (int col2 = 0; col2 < 3; col2++) {
                         if (board[col2][row].equals("empty")) {
                             emptySquareRow = col2;
@@ -550,7 +534,7 @@ public class MainActivity extends AppCompatActivity {
                 if (numCrossesCurCol == 3) {
                     gameOver = true;
                     crossWon = true;
-                } else if (numCrossesCurCol == 2 && !difficultySelected.equals("easy")) {
+                } else if (numCrossesCurCol == 2 && !difficultySelected.equals("easy")&& moveNumber != 9) {
                     for (int col2 = 0; col2 < 3; col2++) {
                         if (board[col2][row].equals("empty")) {
                             emptySquareRow = col2;
@@ -570,7 +554,7 @@ public class MainActivity extends AppCompatActivity {
                 if (numCrossesCurRow == 3) {
                     gameOver = true;
                     crossWon = true;
-                } else if (numCrossesCurRow == 2 && !difficultySelected.equals("easy")) {
+                } else if (numCrossesCurRow == 2 && !difficultySelected.equals("easy") && moveNumber != 9) {
                     for (int col2 = 0; col2 < 3; col2++) {
                         if (board[row][col2].equals("empty")) {
                             emptySquareRow = row;
@@ -590,7 +574,7 @@ public class MainActivity extends AppCompatActivity {
                 if (numCirclesCurRow == 3) {
                     gameOver = true;
                     circleWon = true;
-                } else if (numCirclesCurRow == 2 && !difficultySelected.equals("easy")) {
+                } else if (numCirclesCurRow == 2 && !difficultySelected.equals("easy") && moveNumber != 9) {
                     for (int col2 = 0; col2 < 3; col2++) {
                         if (board[row][col2].equals("empty")) {
                             emptySquareRow = row;
@@ -606,9 +590,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //place in current row
                 }
-
                 //chekcs for almost diagonal win by circle
-                if ((!difficultySelected.equals("easy") && !board[0][0].equals("empty") && board[0][0].equals("circle") && (board[1][1].equals("empty") && (!board[2][2].equals("empty") && board[2][2].equals("circle"))))) {
+                if (moveNumber != 9 && (!difficultySelected.equals("easy") && !board[0][0].equals("empty") && board[0][0].equals("circle") && (board[1][1].equals("empty") && (!board[2][2].equals("empty") && board[2][2].equals("circle"))))) {
                     circleAlmostWin = true;
                     boxToWinOrBlock = convert2DBoardValueToBooleanArrayInt(1, 1);
                     if (userSymbol.equals("circle")){
@@ -616,7 +599,7 @@ public class MainActivity extends AppCompatActivity {
                     }else {
                         boxToWinForAi = boxToWinOrBlock;
                     }
-                } else if (!difficultySelected.equals("easy") &&(!board[0][2].equals("empty") && board[0][2].equals("circle") && (board[1][1].equals("empty") && (!board[2][0].equals("empty") && board[2][0].equals("circle"))))) {
+                } else if (moveNumber != 9 && !difficultySelected.equals("easy") &&(!board[0][2].equals("empty") && board[0][2].equals("circle") && (board[1][1].equals("empty") && (!board[2][0].equals("empty") && board[2][0].equals("circle"))))) {
                     circleAlmostWin = true;
                     boxToWinOrBlock = convert2DBoardValueToBooleanArrayInt(1, 1);
                     if (userSymbol.equals("circle")){
@@ -624,7 +607,7 @@ public class MainActivity extends AppCompatActivity {
                     }else {
                         boxToWinForAi = boxToWinOrBlock;
                     }
-                } else if (!difficultySelected.equals("easy") &&(board[0][0].equals("empty")  && (!board[1][1].equals("empty") && board[1][1].equals("circle")&& (!board[2][2].equals("empty") && board[2][2].equals("circle"))))) {
+                } else if (moveNumber != 9 && !difficultySelected.equals("easy") &&(board[0][0].equals("empty")  && (!board[1][1].equals("empty") && board[1][1].equals("circle")&& (!board[2][2].equals("empty") && board[2][2].equals("circle"))))) {
                         circleAlmostWin = true;
                         boxToWinOrBlock = convert2DBoardValueToBooleanArrayInt(0, 0);
                     if (userSymbol.equals("circle")){
@@ -632,7 +615,7 @@ public class MainActivity extends AppCompatActivity {
                     }else {
                         boxToWinForAi = boxToWinOrBlock;
                     }
-                } else if (!difficultySelected.equals("easy") &&(!board[0][0].equals("empty")&& board[0][0].equals("circle") && (!board[1][1].equals("empty") && board[1][1].equals("circle") && (board[2][2].equals("empty"))))) {
+                } else if (moveNumber != 9 && !difficultySelected.equals("easy") &&(!board[0][0].equals("empty")&& board[0][0].equals("circle") && (!board[1][1].equals("empty") && board[1][1].equals("circle") && (board[2][2].equals("empty"))))) {
                         circleAlmostWin = true;
                         boxToWinOrBlock = convert2DBoardValueToBooleanArrayInt(2, 2);
                     if (userSymbol.equals("circle")){
@@ -640,7 +623,7 @@ public class MainActivity extends AppCompatActivity {
                     }else {
                         boxToWinForAi = boxToWinOrBlock;
                     }
-                } else if (!difficultySelected.equals("easy") &&(board[2][0].equals("empty")  && (!board[1][1].equals("empty") && board[1][1].equals("circle")&& (!board[0][2].equals("empty") && board[0][2].equals("circle"))))) {
+                } else if (moveNumber != 9 && !difficultySelected.equals("easy") &&(board[2][0].equals("empty")  && (!board[1][1].equals("empty") && board[1][1].equals("circle")&& (!board[0][2].equals("empty") && board[0][2].equals("circle"))))) {
                     circleAlmostWin = true;
                     boxToWinOrBlock = convert2DBoardValueToBooleanArrayInt(2, 0);
                     if (userSymbol.equals("circle")){
@@ -648,7 +631,7 @@ public class MainActivity extends AppCompatActivity {
                     }else {
                         boxToWinForAi = boxToWinOrBlock;
                     }
-                } else if (!difficultySelected.equals("easy") &&(board[0][2].equals("empty") && (!board[1][1].equals("empty") && board[1][1].equals("circle") && (!board[2][0].equals("empty") && board[2][0].equals("circle"))))) {
+                } else if ( moveNumber != 9 && !difficultySelected.equals("easy") &&(board[0][2].equals("empty") && (!board[1][1].equals("empty") && board[1][1].equals("circle") && (!board[2][0].equals("empty") && board[2][0].equals("circle"))))) {
                     circleAlmostWin = true;
                     boxToWinOrBlock = convert2DBoardValueToBooleanArrayInt(0, 2);
                     if (userSymbol.equals("circle")){
@@ -711,27 +694,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-        if (!gameOver && !circleWon && !crossWon&& moveNumber == 9){
-            showWinScreen();
-            TextView outcomeText = (findViewById(R.id.EndOfGameText));
-            outcomeText.setText("You Tied!!");
-        }
-        //places winning move for ai
-        if (!difficultySelected.equals("easy") && boxToWinOrBlock != 666 && (circleAlmostWin || crossAlmostWin) && curTurn.equals("ai") && !gameOver) {
-            if (circleAlmostWin && userSymbol.equals("cross") && boxToWinForAi != 666) {
-                placeSymbol(boxToWinForAi);
-                circleWon = true;
-            } else if (crossAlmostWin && userSymbol.equals("circle") && boxToWinForAi != 666) {
-                placeSymbol(boxToWinForAi);
-                crossWon = true;
-            } else if (circleAlmostWin && userSymbol.equals("circle") && boxToWinForUser != 666) {
-                placeSymbol(boxToWinForUser);
-            } else if (crossAlmostWin && userSymbol.equals("cross") && boxToWinForUser != 666) {
-                placeSymbol(boxToWinForUser);
-            }
-        } else if (!difficultySelected.equals("easy") && curTurn.equals("ai")){
-            randomPlacer();
-        }
         //adds for diagonal win for circles
         if ((!board[0][0].equals("empty") && board[0][0].equals("circle") && (!board[1][1].equals("empty") && board[1][1].equals("circle") && (!board[2][2].equals("empty") && board[2][2].equals("circle"))))){
             gameOver = true;
@@ -749,6 +711,29 @@ public class MainActivity extends AppCompatActivity {
             gameOver = true;
             crossWon = true;
         }
+        if (!gameOver && !circleWon && !crossWon&& moveNumber == 9){
+            showWinScreen();
+            TextView outcomeText = (findViewById(R.id.EndOfGameText));
+            outcomeText.setText("You Tied!!");
+            return;
+        }
+        //places winning move for ai
+        if (!difficultySelected.equals("easy") && boxToWinOrBlock != 666 && (circleAlmostWin || crossAlmostWin) && curTurn.equals("ai") && !gameOver) {
+            if (circleAlmostWin && userSymbol.equals("cross") && boxToWinForAi != 666) {
+                placeSymbol(boxToWinForAi);
+                circleWon = true;
+            } else if (crossAlmostWin && userSymbol.equals("circle") && boxToWinForAi != 666) {
+                placeSymbol(boxToWinForAi);
+                crossWon = true;
+            } else if (circleAlmostWin && userSymbol.equals("circle") && boxToWinForUser != 666) {
+                placeSymbol(boxToWinForUser);
+            } else if (crossAlmostWin && userSymbol.equals("cross") && boxToWinForUser != 666) {
+                placeSymbol(boxToWinForUser);
+            }
+        } else if (!difficultySelected.equals("easy") && curTurn.equals("ai")){
+            randomPlacer();
+        }
+
         //changes game outcome text
         if (gameOver && (circleWon || crossWon)){
             showWinScreen();
